@@ -37,8 +37,8 @@ int tempPin = PA1;
 int cel;
 int sp = 0;
 #define DEBUG true
-#define IP "184.106.153.149"// thingspeak.com ip
-String Api_key = "GET /update?key=SR7EOTPXB4PCUKZA";              // Write API Key 
+#define IP "184.106.153.149"
+String Api_key = "GET /update?key=SR7EOTPXB4PCUKZA";  // Write API Key for "https://thingspeak.com/channels/1385817"
 int error;
 
 void setup()
@@ -238,7 +238,7 @@ void updatedata() {
   }
   else {
     Serial.println("AT+CIPCLOSE");
-    Serial3.println("AT+CIPCLOSE");   // Resend
+    Serial3.println("AT+CIPCLOSE");                         // Resend
     error = 1;
   }
 }
