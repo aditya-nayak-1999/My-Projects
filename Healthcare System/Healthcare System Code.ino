@@ -1,70 +1,48 @@
-//============================================
 #include <Wire.h>
 #include "MAX30100_PulseOximeter.h"
 #define REPORTING_PERIOD_MS     1000
 PulseOximeter pox;
 uint32_t tsLastReport = 0;
-//===========================================
-
-
-//=========================================
 #include <LiquidCrystal.h>
-//#define DEBUG true
-
-String stringtemperature;
+String stringtemperature;        
 String systolic;
 String diastolic;
 String pulse;
 String temp1;
 String stringOne = "this", stringTwo;
-String inputString = "";         // a string to hold incoming data
+String inputString = "";                             // String to hold incoming data
 char d = 0;
 int countState = 0;
 int timerState = 0;
-//String systolic;
-String data;
+String data;                                         // String systolic;
 String sysdata;
 String diadata;
 String hrdata;
 int count = 0;
 char e = 0;
-
 int intsystolic = 0;
 int intdiastolic = 0;
 int intpulse = 0;
 int intcel = 0;
-
 int intsysdata = 0;
 int intdiadata = 0;
 int inthrdata = 0;
-
-
-const int button1Pin = PB3;     // the number of the pushbutton pin
+const int button1Pin = PB3;                          // The number of the pushbutton pin
 int button1State = 0;
-const int button2Pin = PB4;     // the number of the pushbutton pin
+const int button2Pin = PB4;                          // The number of the pushbutton pin
 int button2State = 0;
-
 LiquidCrystal lcd(PA2, PA3, PA4, PA5, PA6, PA7);
-
 int val;
 int tempPin = PA1;
-
 int cel;
-
 int sp = 0;
-//==================================================================
-
 #define DEBUG true
 #define IP "184.106.153.149"// thingspeak.com ip
-String Api_key = "GET /update?key=ZVH756XZNNZD9MIV"; //change it with your api key like "GET /update?key=Your Api Key"
-
+String Api_key = "GET /update?key=SR7EOTPXB4PCUKZA";              // Write API Key 
 int error;
 
-//=======================
 void setup()
 {
-
-  //=====================
   pinMode(button1Pin, INPUT_PULLUP);
   pinMode(button2Pin, INPUT_PULLUP);
   Serial.begin(9600);
@@ -75,18 +53,11 @@ void setup()
   lcd.print("IoT HEALTHCARE");
   lcd.setCursor(0, 1);
   lcd.print("    SYSTEM    ");
-
   delay(3000);
   Serial.begin(9600);
-    //=====================================
-
-  send_command("AT+RST\r\n", 2000, DEBUG); //reset module
-  send_command("AT+CWMODE=1\r\n", 1000, DEBUG); //set station mode
+  send_command("AT+RST\r\n", 2000, DEBUG);                        // Reset module
+  send_command("AT+CWMODE=1\r\n", 1000, DEBUG);                   // Set station mode
   send_command("AT+CWJAP=\"TGL\",\"12345678\"\r\n", 2000, DEBUG);
-  //====================================
-
-
-
   
   if (!pox.begin()) {
     Serial.println("FAILED");
@@ -95,21 +66,14 @@ void setup()
     Serial.println("SUCCESS");
   }
   pox.setIRLedCurrent(MAX30100_LED_CURR_7_6MA);
-
-
 }
 
 void loop()
 {
-
 label1:
-
   pox.update();
   if (millis() - tsLastReport > REPORTING_PERIOD_MS)
   {
-    // Serial.print("SpO2:");
-    //  Serial.print(pox.getSpO2());
-    // Serial.println("%");
     sp = pox.getSpO2();
     tsLastReport = millis();
     val = analogRead(tempPin);
@@ -125,13 +89,10 @@ label1:
     lcd.print("SPO2:");
     lcd.print(sp);
     lcd.print("%");
-    //  Serial.println(cel);
-
+    
     button2State = digitalRead(button2Pin);
     if (button2State == LOW)
     {
-      // thingSpeakWrite(sp, cel);
-     // updatedata();
       lcd.clear();
       lcd.print("Checking BP/Pulse....");
       Serial1.begin(115200);
@@ -139,17 +100,9 @@ label1:
       goto checkbp;
     }
   }
-
-  // thingSpeakWrite(10,10,10,10,10);
-
   goto label1;
-
-  //===============================
-
-
-
+  
 checkbp:
-
 compare:
   if (Serial1.available() > 0)
   {
@@ -157,22 +110,16 @@ compare:
     {
       lcd.clear();
       lcd.print("$ received!!!");
-      //  delay(2000);
+      
 label5:
       d = Serial1.read();
       if (d == '#')
       {
         goto label6;
       }
-      // delay(10);
-
       delay(10);
       sysdata += d;
-      //  lcd.print(d);
-      //  Serial.print(d);
       delay(10);
-
-
       goto label5;
 
 label6:
@@ -181,24 +128,15 @@ label6:
       {
         goto label7;
       }
-      // delay(100);
-
       delay(10);
       diadata += d;
-      //  lcd.print(d);
-      //  Serial.print(d);
       delay(10);
-
-
       goto label6;
 
 label7:
-      // delay(100);
       d = Serial1.read();
       delay(10);
       hrdata += d;
-      // lcd.print(d);
-      // Serial.print(d);
       delay(10);
 
       if (d == '\n')
@@ -222,12 +160,6 @@ label7:
         intsysdata = sysdata.toInt();
         intdiadata = diadata.toInt();
         inthrdata = hrdata.toInt();
-
-        //    int intsysdata = atof(sysdata);
-        //   int intdiadata = atof(diadata);
-        // int inthrdata = atof(hrdata);
-        //  int int = atof(sysdata);
-
         Serial.print("Systolic:");
         Serial.println(intsysdata);
         Serial.print("Diastolic:");
@@ -240,13 +172,10 @@ label7:
         Serial.println(sp);
         delay(3000);
         updatedata();
-        //  thingSpeakWrite(intsysdata, intdiadata);
         delay(5000);
-        // thingSpeakWrite(intsysdata, intdiadata);
         goto label1;
       }
       goto label7;
-
     }
   }
 
@@ -258,18 +187,9 @@ label7:
     delay(4000);
     goto label1;
   }
-
   goto checkbp;
-  // }
-
-  //====================
-
-
-
 }
 
-
-//=======================
 void updatedata() {
   String command = "AT+CIPSTART=\"TCP\",\"";
   command += IP;
@@ -302,7 +222,6 @@ void updatedata() {
   Serial.println(command.length());
   Serial3.println(command.length());
 
-
   if (Serial3.find(">")) {
     delay(200);
     Serial.print(command);
@@ -317,42 +236,12 @@ void updatedata() {
     Serial3.println("AT");
     delay(200);
   }
-
-  /*
-    Serial.print("AT+CIPSEND=");
-    delay(20);
-    Serial3.print("AT+CIPSEND=");
-    delay(20);
-    Serial.println(command.length());
-    delay(200);
-    Serial3.println(command.length());
-    Serial3.begin(9600);
-    delay(200);
-    if (Serial3.find(">")) {
-     delay(100);
-     Serial.println(command);
-     delay(20);
-     Serial3.println(command);
-     delay(3000);
-     Serial3.println("AT");
-     delay(200);
-    }
-  */
   else {
-
     Serial.println("AT+CIPCLOSE");
-    Serial3.println("AT+CIPCLOSE");
-    //Resend...
+    Serial3.println("AT+CIPCLOSE");   // Resend
     error = 1;
   }
 }
-
-
-
-
-
-
-
 
 String send_command(String command, const int timeout, boolean debug)
 {
