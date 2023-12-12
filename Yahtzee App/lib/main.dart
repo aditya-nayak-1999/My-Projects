@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../views/yahtzee.dart';
+import 'package:mp2/views/yahtzee.dart';
 
 void main() => runApp(YahtzeeApp());            // Entry point of the app
 

@@ -1,0 +1,28 @@
+name: cs442_mp1
+description: CS 442 MP1 - Profile information page
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/profile.jpg
+    - assets/images/highschool-logo.png
+    - assets/images/university-logo.png
+    - assets/images/project1-logo.png
+    - assets/images/project2-logo.png
+    - assets/images/project3-logo.png
+    - assets/images/project4-logo.png
+    - assets/images/project5-logo.png

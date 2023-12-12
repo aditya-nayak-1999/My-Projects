@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/dice.dart';
-import '../models/scorecard.dart';
+import 'package:mp2/models/dice.dart';
+import 'package:mp2/models/scorecard.dart';
 
 class Yahtzee extends StatefulWidget {
   @override
